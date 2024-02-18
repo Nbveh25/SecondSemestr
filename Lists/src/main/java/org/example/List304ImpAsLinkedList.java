@@ -3,12 +3,9 @@ package org.example;
 public class List304ImpAsLinkedList implements List304{
 
     private Node head;
-    private int size;
+    private int size = 0;
 
-    public List304ImpAsLinkedList() {
-        size = 0;
-        head = null;
-    }
+    public List304ImpAsLinkedList() {}
 
 
     @Override
