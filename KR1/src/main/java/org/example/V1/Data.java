@@ -7,7 +7,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class Data {
-    private Map<String, List<Program>> channelsAndPrograms = new HashMap<>();
+    private Map<BroadcastsTime, List<Program>> channelsAndPrograms = new HashMap<>();
     private List<Program> allPrograms = new ArrayList<>();
 
     public void readFile(String filePath) {
@@ -27,7 +27,7 @@ public class Data {
                         String name = line;
                         Program program = new Program(channel, time, name);
                         allPrograms.add(program);
-                        channelsAndPrograms.computeIfAbsent(channel, k -> new ArrayList<>()).add(program);
+                        channelsAndPrograms.computeIfAbsent(time, k -> new ArrayList<>()).add(program);
                         time = null;
                     }
                 }
@@ -73,10 +73,9 @@ public class Data {
 
     public List<Program> programsOfChannel(String name) {
         List<Program> targetProgram = new ArrayList<>();
-        List<Program> channelPrograms = channelsAndPrograms.get(name);
-        if (channelPrograms != null) {
-            for (Program program : channelPrograms) {
-                targetProgram.add(program);
+        for (int i = 0; i < allPrograms.size(); i++) {
+            if (Objects.equals(allPrograms.get(i).getChannel(), name)) {
+                targetProgram.add(allPrograms.get(i));
             }
         }
         return targetProgram;
@@ -84,12 +83,13 @@ public class Data {
 
     public List<Program> programsOfInterval(String name, BroadcastsTime timeBegin, BroadcastsTime timeEnd) {
         List<Program> targetProgram = new ArrayList<>();
-        List<Program> channelPrograms = channelsAndPrograms.get(name);
-        if (channelPrograms != null) {
-            for (Program program : channelPrograms) {
-                if (program.getTime().between(timeBegin, timeEnd)) {
-                    targetProgram.add(program);
+
+        for (int i = 0; i < allPrograms.size(); i++) {
+            if (Objects.equals(allPrograms.get(i).getChannel(), name)) {
+                if (allPrograms.get(i).getTime().between(timeBegin, timeEnd)) {
+                    targetProgram.add(allPrograms.get(i));
                 }
+
             }
         }
         return targetProgram;
